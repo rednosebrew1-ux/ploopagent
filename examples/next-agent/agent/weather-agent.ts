@@ -1,8 +1,14 @@
 import { weatherTool } from '@/tool/weather-tool';
-import { openai } from '@ai-sdk/openai';
+import { createOpenAI } from '@ai-sdk/openai';
 import { ToolLoopAgent, type InferAgentUIMessage } from 'ai';
+
+const openrouter = createOpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.OPENROUTER_API_KEY,
+});
+
 export const weatherAgent = new ToolLoopAgent({
-  model: openai('gpt-6-astra'),
+  model: openrouter('anthropic/claude-opus-4'),
   instructions: 'You are a helpful assistant.',
   tools: {
     weather: weatherTool,
