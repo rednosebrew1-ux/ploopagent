@@ -8,7 +8,7 @@ const openrouter = createOpenAI({
 });
 
 export const weatherAgent = new ToolLoopAgent({
-  model: openrouter('anthropic/claude-opus-4'),
+  model: openrouter.chat('anthropic/claude-opus-4'),
   instructions: 'You are a helpful assistant.',
   tools: {
     weather: weatherTool,
