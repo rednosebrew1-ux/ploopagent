@@ -14,6 +14,11 @@ const LABELS: Record<string, string> = {
   createPlan: 'Making a plan',
   updateStep: 'Updating the plan',
   listPlans: 'Checking plans',
+  runCommand: 'Running a command',
+  readFile: 'Reading a file',
+  writeFile: 'Writing a file',
+  listFiles: 'Listing files',
+  browse: 'Browsing',
   draftEmail: 'Drafting an email',
   sendEmail: 'Sending an email',
 };
@@ -88,6 +93,70 @@ export default function ToolView({
         </div>
       );
     }
+
+    case 'tool-runCommand': {
+      if (!part.input) {
+        return <div className="text-sm text-gray-500">{label}…</div>;
+      }
+      return (
+        <div className="p-3 my-2 text-sm border border-gray-300 rounded">
+          <div className="mb-1 text-gray-500">{part.input.why}</div>
+          <pre className="p-2 overflow-x-auto bg-gray-100 rounded">
+            $ {part.input.command}
+          </pre>
+
+          {part.state === 'approval-requested' && (
+            <div className="flex gap-2 mt-3">
+              <button
+                className="px-3 py-1 text-white bg-black rounded"
+                onClick={() => onApproval(part.approval.id, true)}
+              >
+                Run it
+              </button>
+              <button
+                className="px-3 py-1 border border-gray-300 rounded"
+                onClick={() => onApproval(part.approval.id, false)}
+              >
+                Don’t run
+              </button>
+            </div>
+          )}
+          {part.state === 'approval-responded' && (
+            <div className="mt-2 text-gray-500">
+              {part.approval.approved ? 'Approved, running…' : 'Declined.'}
+            </div>
+          )}
+          {part.state === 'output-available' && (
+            <details className="mt-2">
+              <summary className="text-gray-500">
+                Exit code {part.output.exitCode}
+              </summary>
+              <pre className="p-2 overflow-x-auto bg-gray-100 rounded whitespace-pre-wrap">
+                {part.output.stdout || part.output.stderr || '(no output)'}
+              </pre>
+            </details>
+          )}
+        </div>
+      );
+    }
+
+    case 'tool-browse':
+      if (part.state === 'output-available') {
+        return (
+          <div className="my-1 text-sm text-gray-500">
+            Browsed{' '}
+            <a
+              className="underline"
+              href={part.output.url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {part.output.title || part.output.url}
+            </a>
+          </div>
+        );
+      }
+      break;
 
     case 'tool-searchWeb':
       if (part.state === 'output-available') {
