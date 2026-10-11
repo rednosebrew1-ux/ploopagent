@@ -1138,6 +1138,9 @@ importers:
       '@ai-sdk/openai':
         specifier: workspace:*
         version: link:../../packages/openai
+      '@ai-sdk/provider-utils':
+        specifier: workspace:*
+        version: link:../../packages/provider-utils
       '@ai-sdk/react':
         specifier: workspace:*
         version: link:../../packages/react

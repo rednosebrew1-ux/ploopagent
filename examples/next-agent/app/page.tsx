@@ -1,40 +1,72 @@
 'use client';
 
-import { useChat } from '@ai-sdk/react';
+import type { PloopAgentUIMessage } from '@/agent/ploop-agent';
 import ChatInput from '@/component/chat-input';
-import type { WeatherAgentUIMessage } from '@/agent/weather-agent';
-import WeatherView from '@/component/weather-view';
+import PlanPanel from '@/component/plan-panel';
+import ToolView from '@/component/tool-view';
+import { useChat } from '@ai-sdk/react';
+import {
+  isStaticToolUIPart,
+  lastAssistantMessageIsCompleteWithApprovalResponses,
+} from 'ai';
+import ReactMarkdown from 'react-markdown';
 
 export default function Chat() {
-  const { status, sendMessage, messages } = useChat<WeatherAgentUIMessage>();
+  const { status, sendMessage, messages, addToolApprovalResponse, stop } =
+    useChat<PloopAgentUIMessage>({
+      sendAutomaticallyWhen:
+        lastAssistantMessageIsCompleteWithApprovalResponses,
+    });
 
   return (
-    <div className="flex flex-col py-24 mx-auto w-full max-w-md stretch">
-      {messages?.map(message => (
-        <div key={message.id} className="whitespace-pre-wrap">
-          <strong>{`${message.role}: `}</strong>
-          {message.parts.map((part, index) => {
-            switch (part.type) {
-              case 'text':
-                return <div key={index}>{part.text}</div>;
+    <div className="flex flex-col gap-8 px-4 py-12 mx-auto max-w-5xl md:flex-row">
+      <main className="flex-1 pb-32 min-w-0">
+        <h1 className="mb-6 text-xl font-semibold">ploop</h1>
 
-              case 'step-start':
-                return index > 0 ? (
-                  <div key={index} className="text-gray-500">
-                    <hr className="my-2 border-gray-300" />
+        {messages.length === 0 && (
+          <p className="text-gray-500">
+            Tell ploop about yourself, ask it to research something, or give it
+            a goal to plan.
+          </p>
+        )}
+
+        {messages.map(message => (
+          <div key={message.id} className="mb-6">
+            <strong>{message.role === 'user' ? 'You' : 'ploop'}</strong>
+            {message.parts.map((part, index) => {
+              if (part.type === 'text') {
+                return (
+                  <div key={index} className="space-y-2">
+                    <ReactMarkdown>{part.text}</ReactMarkdown>
                   </div>
-                ) : null;
-
-              case 'tool-weather': {
-                return <WeatherView invocation={part} />;
+                );
               }
-            }
-          })}
-          <br />
-        </div>
-      ))}
 
-      <ChatInput status={status} onSubmit={text => sendMessage({ text })} />
+              if (isStaticToolUIPart(part)) {
+                return (
+                  <ToolView
+                    key={index}
+                    part={part}
+                    onApproval={(id, approved) =>
+                      addToolApprovalResponse({ id, approved })
+                    }
+                  />
+                );
+              }
+
+              return null;
+            })}
+          </div>
+        ))}
+
+        <ChatInput
+          status={status}
+          stop={stop}
+          onSubmit={text => sendMessage({ text })}
+        />
+      </main>
+
+      <PlanPanel refreshKey={`${messages.length}:${status}`} />
     </div>
   );
 }
