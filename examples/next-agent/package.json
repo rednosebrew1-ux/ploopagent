@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "workspace:*",
+    "@ai-sdk/provider-utils": "workspace:*",
     "@ai-sdk/react": "workspace:*",
     "@vercel/blob": "^0.26.0",
     "ai": "workspace:*",

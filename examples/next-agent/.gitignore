@@ -37,3 +37,6 @@ next-env.d.ts
 # persistence
 .chats
 .streams
+
+# ploop data (memory and plans)
+.ploop
