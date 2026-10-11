@@ -2,9 +2,10 @@ import { safeParseJSON } from '@ai-sdk/provider-utils';
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { z } from 'zod';
+import { getVm, hasVercelVm, type PloopVm } from './vm';
 
-// Ploop keeps its memory and plans in JSON files on the server.
-// Set PLOOP_DATA_DIR to move them (for example to /tmp on serverless hosts).
+// Ploop keeps its memory and plans as JSON files: on its VM's disk when it
+// has a Vercel VM, otherwise in PLOOP_DATA_DIR (default ./.ploop).
 const dataDir =
   process.env.PLOOP_DATA_DIR ?? path.join(process.cwd(), '.ploop');
 
@@ -48,23 +49,48 @@ async function readCollection<T>(
   name: string,
   schema: z.ZodType<T[]>,
 ): Promise<T[]> {
-  let text: string;
-  try {
-    text = await readFile(path.join(dataDir, `${name}.json`), 'utf8');
-  } catch {
-    return [];
-  }
+  const text = await readData(`${name}.json`);
+  if (text == null) return [];
 
   const result = await safeParseJSON({ text, schema });
   return result.success ? result.value : [];
 }
 
 async function writeCollection<T>(name: string, items: T[]) {
+  await writeData(`${name}.json`, JSON.stringify(items, null, 2));
+}
+
+// When ploop has its Vercel VM, its data lives on the VM's persistent disk.
+// Otherwise (local development) it lives in PLOOP_DATA_DIR on this machine.
+async function readData(file: string): Promise<string | null> {
+  if (hasVercelVm()) {
+    const vm = await getVm();
+    return vm.session.readTextFile({ path: vmDataPath(vm, file) });
+  }
+
+  try {
+    return await readFile(path.join(dataDir, file), 'utf8');
+  } catch {
+    return null;
+  }
+}
+
+async function writeData(file: string, content: string) {
+  if (hasVercelVm()) {
+    const vm = await getVm();
+    await vm.session.writeTextFile({ path: vmDataPath(vm, file), content });
+    return;
+  }
+
   await mkdir(dataDir, { recursive: true });
-  const file = path.join(dataDir, `${name}.json`);
-  const tmp = `${file}.${process.pid}.tmp`;
-  await writeFile(tmp, JSON.stringify(items, null, 2));
-  await rename(tmp, file);
+  const target = path.join(dataDir, file);
+  const tmp = `${target}.${process.pid}.tmp`;
+  await writeFile(tmp, content);
+  await rename(tmp, target);
+}
+
+function vmDataPath(vm: PloopVm, file: string) {
+  return path.posix.join(vm.workspace, '.ploop', file);
 }
 
 // Serialize writes so two tool calls in one step don't overwrite each other.
