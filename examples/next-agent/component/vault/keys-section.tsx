@@ -23,7 +23,7 @@ const KEYS: Array<{ name: KeyName; label: string; help: string }> = [
 ];
 
 const inputClass =
-  'w-full p-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-black';
+  'w-full p-2 bg-white border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-ink';
 
 export default function KeysSection({ api }: { api: PloopDesktopApi }) {
   const [status, setStatus] = useState<PloopSettingsStatus>();
@@ -160,7 +160,7 @@ export default function KeysSection({ api }: { api: PloopDesktopApi }) {
           <button
             type="submit"
             disabled={saving}
-            className="px-3 py-1 text-white bg-black rounded disabled:opacity-60"
+            className="px-4 py-1 font-medium text-white rounded-full bg-ink hover:bg-lagoon-deep disabled:opacity-60"
           >
             {saving ? 'Saving…' : 'Save keys'}
           </button>

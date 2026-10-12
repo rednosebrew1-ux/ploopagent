@@ -12,7 +12,7 @@ type Values = {
 };
 
 const inputClass =
-  'w-full p-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-black';
+  'w-full p-2 bg-white border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-ink';
 
 function Field({
   label,
@@ -59,7 +59,7 @@ export default function LoginForm({
 
   return (
     <form
-      className="p-4 mb-6 space-y-4 text-sm border border-gray-300 rounded"
+      className="p-4 mb-6 space-y-4 text-sm bg-white border border-gray-300 rounded-xl"
       onSubmit={async event => {
         event.preventDefault();
         setSaving(true);
@@ -162,14 +162,14 @@ export default function LoginForm({
         <button
           type="submit"
           disabled={saving}
-          className="px-3 py-1 text-white bg-black rounded disabled:opacity-60"
+          className="px-4 py-1 font-medium text-white rounded-full bg-ink hover:bg-lagoon-deep disabled:opacity-60"
         >
           {saving ? 'Saving…' : 'Save'}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="px-3 py-1 border border-gray-400 rounded"
+          className="px-4 py-1 bg-white border border-gray-400 rounded-full hover:bg-blush-deep"
         >
           Cancel
         </button>

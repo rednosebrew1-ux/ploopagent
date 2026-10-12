@@ -140,7 +140,7 @@ async function main() {
       minWidth: 720,
       minHeight: 560,
       title: 'ploop',
-      backgroundColor: '#ffffff',
+      backgroundColor: '#fff1f5',
       webPreferences: {
         preload: path.join(__dirname, 'preload.cjs'),
         sandbox: true,

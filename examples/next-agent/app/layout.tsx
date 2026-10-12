@@ -12,7 +12,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <div aria-hidden className="h-1.5 bg-rainbow" />
+        {children}
+      </body>
     </html>
   );
 }

@@ -14,7 +14,7 @@ function host(url: string) {
 }
 
 const linkButton =
-  'underline underline-offset-2 hover:text-black disabled:opacity-60';
+  'underline underline-offset-2 hover:text-lagoon-deep disabled:opacity-60';
 
 export default function LoginsSection({ api }: { api: PloopDesktopApi }) {
   const [logins, setLogins] = useState<PloopLogin[]>();
@@ -72,7 +72,7 @@ export default function LoginsSection({ api }: { api: PloopDesktopApi }) {
         </h2>
         {editing === undefined && (
           <button
-            className="px-3 py-1 text-sm text-white bg-black rounded"
+            className="px-4 py-1 text-sm font-medium text-white rounded-full bg-ink hover:bg-lagoon-deep"
             onClick={() => setEditing('new')}
           >
             Add a login
@@ -121,7 +121,7 @@ export default function LoginsSection({ api }: { api: PloopDesktopApi }) {
       )}
 
       {logins?.length === 0 && editing !== 'new' && (
-        <div className="p-4 text-sm border border-gray-300 border-dashed rounded">
+        <div className="p-4 text-sm bg-white border border-gray-300 border-dashed rounded-xl">
           <p className="font-medium">No logins yet</p>
           <p className="mt-1 text-gray-600">
             Add the sign-in page, username and password for a site. Then ask

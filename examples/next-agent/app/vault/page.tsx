@@ -1,8 +1,8 @@
 'use client';
 
+import BrandHeader from '@/component/brand-header';
 import KeysSection from '@/component/vault/keys-section';
 import LoginsSection from '@/component/vault/logins-section';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function VaultPage() {
@@ -23,17 +23,15 @@ export default function VaultPage() {
 
   return (
     <div className="px-4 py-12 mx-auto space-y-10 max-w-3xl">
-      <header className="flex items-baseline justify-between">
-        <h1 className="text-xl font-semibold">Vault</h1>
-        <Link className="text-sm underline underline-offset-2" href="/">
-          Back to chat
-        </Link>
-      </header>
+      <BrandHeader
+        title="Vault"
+        action={{ href: '/', label: 'Back to chat' }}
+      />
 
       {api === undefined && <p className="text-sm text-gray-600">Loading…</p>}
 
       {api === null && (
-        <div className="p-4 text-sm border border-gray-300 rounded">
+        <div className="p-4 text-sm bg-white border border-gray-300 rounded-xl">
           <p className="font-medium">
             The vault lives in the ploop desktop app
           </p>
@@ -61,7 +59,7 @@ export default function VaultPage() {
                 : 'This build tells you when a new version is out and opens the download page.'}
             </p>
             <button
-              className="px-3 py-1 mt-3 border border-gray-400 rounded"
+              className="px-4 py-1 mt-3 bg-white border border-gray-400 rounded-full hover:bg-blush-deep"
               onClick={() => {
                 setUpdateMessage('Checking…');
                 api.app
