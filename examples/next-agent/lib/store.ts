@@ -6,8 +6,11 @@ import { getVm, hasVercelVm, type PloopVm } from './vm';
 
 // Ploop keeps its memory and plans as JSON files: on its VM's disk when it
 // has a Vercel VM, otherwise in PLOOP_DATA_DIR (default ./.ploop).
+// The path is only known at run time, so keep the bundler from tracing the
+// whole project into a standalone build because of it.
 const dataDir =
-  process.env.PLOOP_DATA_DIR ?? path.join(process.cwd(), '.ploop');
+  process.env.PLOOP_DATA_DIR ??
+  path.join(/*turbopackIgnore: true*/ process.cwd(), '.ploop');
 
 export const memorySchema = z.object({
   id: z.string(),

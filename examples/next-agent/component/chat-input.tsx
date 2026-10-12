@@ -21,7 +21,7 @@ export default function ChatInput({
       }}
     >
       <input
-        className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl"
+        className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded-full shadow-xl bg-white focus:outline-none focus:ring-2 focus:ring-ink"
         placeholder="Say something..."
         disabled={status !== 'ready'}
         value={text}
@@ -29,7 +29,7 @@ export default function ChatInput({
       />
       {stop && (status === 'streaming' || status === 'submitted') && (
         <button
-          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl"
+          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded-full shadow-xl bg-white focus:outline-none focus:ring-2 focus:ring-ink"
           type="submit"
           onClick={stop}
         >

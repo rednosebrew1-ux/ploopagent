@@ -74,6 +74,9 @@
     },
     {
       "path": "examples/nuxt-openai"
+    },
+    {
+      "path": "examples/ploop-desktop"
     }
   ],
   "include": []

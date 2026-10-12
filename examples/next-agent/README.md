@@ -4,16 +4,21 @@ An open-source personal AI agent, in the spirit of Meta's Muse and ChatGPT Dots.
 
 ## What it can do
 
-| Tool                                                  | What it does                                                                                     |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `remember` / `recall` / `forget`                      | Long-term memory of your preferences, people and goals, kept between chats.                      |
-| `searchWeb` / `readPage`                              | Web research with sources (Tavily search, plus reading public pages).                            |
-| `createPlan` / `updateStep` / `listPlans`             | Breaks a goal into steps and tracks progress in the side panel.                                  |
-| `runCommand` / `readFile` / `writeFile` / `listFiles` | Works on ploop's own VM. Every command needs your **Run it** click.                              |
-| `browse`                                              | Reads pages in a headless Chromium on the VM (set up on first use).                              |
-| `draftEmail` / `sendEmail`                            | Drafts email for review; every send needs your **Approve and send** click (sent through Resend). |
+| Tool                                                  | What it does                                                                                                                                 |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `remember` / `recall` / `forget`                      | Long-term memory of your preferences, people and goals, kept between chats.                                                                  |
+| `searchWeb` / `readPage`                              | Web research with sources (Tavily search, plus reading public pages).                                                                        |
+| `createPlan` / `updateStep` / `listPlans`             | Breaks a goal into steps and tracks progress in the side panel.                                                                              |
+| `runCommand` / `readFile` / `writeFile` / `listFiles` | Works on ploop's own VM. Every command needs your **Run it** click.                                                                          |
+| `browse`                                              | Reads pages in a headless Chromium on the VM (set up on first use).                                                                          |
+| `listLogins` / `loginToSite` / `readSitePage`         | Signs in to websites with logins from the desktop app's vault, without ever seeing the password. Every sign-in needs your **Sign in** click. |
+| `draftEmail` / `sendEmail`                            | Drafts email for review; every send needs your **Approve and send** click (sent through Resend).                                             |
 
 The agent lives in `agent/ploop-agent.ts`, its tools in `tool/`, its VM in `lib/vm.ts`, and storage in `lib/store.ts`.
+
+## Mac app and vault
+
+`examples/ploop-desktop` wraps this app in a Mac app with an encrypted vault for website logins. The vault tools only work there; run in a browser, they report that the vault isn't available. The Vault page (`/vault`) is the interface for it. See `examples/ploop-desktop/README.md`.
 
 ## Ploop's VM
 
