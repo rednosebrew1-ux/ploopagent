@@ -35,6 +35,8 @@ allowBuilds:
   '@swc/core': false
   '@xai-official/grok': false
   cbor-extract: false
+  electron: false
+  electron-winstaller: false
   esbuild: true
   lmdb: false
   msgpackr-extract: false

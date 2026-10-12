@@ -9,6 +9,7 @@ import {
   isStaticToolUIPart,
   lastAssistantMessageIsCompleteWithApprovalResponses,
 } from 'ai';
+import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 
 export default function Chat() {
@@ -21,7 +22,12 @@ export default function Chat() {
   return (
     <div className="flex flex-col gap-8 px-4 py-12 mx-auto max-w-5xl md:flex-row">
       <main className="flex-1 pb-32 min-w-0">
-        <h1 className="mb-6 text-xl font-semibold">ploop</h1>
+        <div className="flex items-baseline justify-between mb-6">
+          <h1 className="text-xl font-semibold">ploop</h1>
+          <Link className="text-sm underline underline-offset-2" href="/vault">
+            Vault
+          </Link>
+        </div>
 
         {messages.length === 0 && (
           <p className="text-gray-500">
