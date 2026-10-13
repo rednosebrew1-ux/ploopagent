@@ -17,6 +17,7 @@ import {
 } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { findDanglingLinks } from './after-pack.mjs';
 import { bootCheck } from './boot-check.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -79,6 +80,15 @@ async function retarget(dir) {
 }
 await retarget(out);
 await rename(oldRoot, newRoot);
+
+// Next's file tracing can leave a pnpm link whose target it never copied (on the
+// macOS runner, styled-jsx). Nothing in the app loads it, and code signing stops
+// at a link that points nowhere, so drop those links. The boot check below
+// proves the server still runs without them.
+for (const link of await findDanglingLinks(out)) {
+  console.warn(`Removing a link whose target was not copied: ${path.relative(out, link)}`);
+  await unlink(link);
+}
 
 // Every symlink must stay inside the copy; a link that reaches outside would
 // work here and break on another Mac.
