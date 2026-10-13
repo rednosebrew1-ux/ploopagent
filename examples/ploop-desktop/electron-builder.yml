@@ -11,10 +11,9 @@ files:
   - dist/**
   - package.json
 
-# ploop's chat server, built by scripts/prepare-next.mjs.
-extraResources:
-  - from: build-next
-    to: next
+# ploop's chat server (built by scripts/prepare-next.mjs) is copied into the app
+# by this hook, because extraResources drops folders named node_modules.
+afterPack: scripts/after-pack.mjs
 
 npmRebuild: false
 
