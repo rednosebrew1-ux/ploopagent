@@ -99,6 +99,13 @@ jobs:
         working-directory: examples/ploop-desktop
         run: node scripts/prepare-next.mjs
 
+      - name: Check the packaged server starts
+        working-directory: examples/ploop-desktop
+        run: |
+          pnpm exec electron-builder --mac --dir --arm64 --publish never -c.mac.identity=null
+          node scripts/verify-package.mjs release/mac-arm64/ploop.app
+          rm -rf release
+
       - name: Package and publish
         working-directory: examples/ploop-desktop
         env:
