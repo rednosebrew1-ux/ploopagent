@@ -36,4 +36,4 @@ publish:
   provider: github
   owner: rednosebrew1-ux
   repo: ploopagent
-  releaseType: release
+  releaseType: prerelease

@@ -35,6 +35,8 @@ export function createUpdater(options: {
   }
 
   function listen() {
+    // ploop releases are marked pre-release while the app is young.
+    autoUpdater.allowPrerelease = true;
     autoUpdater.autoDownload = false;
     autoUpdater.autoInstallOnAppQuit = false;
 
