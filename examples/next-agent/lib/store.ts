@@ -2,10 +2,10 @@ import { safeParseJSON } from '@ai-sdk/provider-utils';
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { z } from 'zod';
-import { getVm, hasVercelVm, type PloopVm } from './vm';
+import { getVm, hasSshVm, hasVercelVm, type PloopVm } from './vm';
 
 // Ploop keeps its memory and plans as JSON files: on its VM's disk when it
-// has a Vercel VM, otherwise in PLOOP_DATA_DIR (default ./.ploop).
+// has a linked or Vercel VM, otherwise in PLOOP_DATA_DIR (default ./.ploop).
 // The path is only known at run time, so keep the bundler from tracing the
 // whole project into a standalone build because of it.
 const dataDir =
@@ -63,10 +63,14 @@ async function writeCollection<T>(name: string, items: T[]) {
   await writeData(`${name}.json`, JSON.stringify(items, null, 2));
 }
 
-// When ploop has its Vercel VM, its data lives on the VM's persistent disk.
+// When ploop has a persistent VM, its data lives on that VM's disk.
 // Otherwise (local development) it lives in PLOOP_DATA_DIR on this machine.
+function usesVmDisk() {
+  return hasSshVm() || hasVercelVm();
+}
+
 async function readData(file: string): Promise<string | null> {
-  if (hasVercelVm()) {
+  if (usesVmDisk()) {
     const vm = await getVm();
     return vm.session.readTextFile({ path: vmDataPath(vm, file) });
   }
@@ -79,7 +83,7 @@ async function readData(file: string): Promise<string | null> {
 }
 
 async function writeData(file: string, content: string) {
-  if (hasVercelVm()) {
+  if (usesVmDisk()) {
     const vm = await getVm();
     await vm.session.writeTextFile({ path: vmDataPath(vm, file), content });
     return;

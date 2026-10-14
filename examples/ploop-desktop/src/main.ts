@@ -41,6 +41,33 @@ const settingsPatch = z.object({
   tavilyApiKey: z.string().optional(),
   resendApiKey: z.string().optional(),
   fromEmail: z.string().optional(),
+  // Checked again where they are used, but a bad value shouldn't be saved.
+  sshHost: z
+    .string()
+    .regex(
+      /^([A-Za-z0-9][A-Za-z0-9._:-]*)?$/,
+      'That address doesn’t look right.',
+    )
+    .optional(),
+  sshUser: z
+    .string()
+    .regex(/^([A-Za-z_][A-Za-z0-9._-]*)?$/, 'That username doesn’t look right.')
+    .optional(),
+  sshPort: z
+    .string()
+    .regex(/^(\d{1,5})?$/, 'The port must be a number.')
+    .refine(
+      value => value === '' || (Number(value) >= 1 && Number(value) <= 65_535),
+      'The port must be between 1 and 65535.',
+    )
+    .optional(),
+  sshKeyPath: z
+    .string()
+    .refine(
+      value => value === '' || value.startsWith('/'),
+      'Use the full path of the key file.',
+    )
+    .optional(),
 });
 const idSchema = z.string();
 

@@ -34,11 +34,22 @@ type PloopSettingsStatus = {
   tavilyApiKey: boolean;
   resendApiKey: boolean;
   fromEmail: string;
+  sshHost: string;
+  sshUser: string;
+  sshPort: string;
+  sshKeyPath: string;
 };
 
 type PloopSettingsPatch = Partial<
   Record<
-    'openrouterApiKey' | 'tavilyApiKey' | 'resendApiKey' | 'fromEmail',
+    | 'openrouterApiKey'
+    | 'tavilyApiKey'
+    | 'resendApiKey'
+    | 'fromEmail'
+    | 'sshHost'
+    | 'sshUser'
+    | 'sshPort'
+    | 'sshKeyPath',
     string
   >
 >;

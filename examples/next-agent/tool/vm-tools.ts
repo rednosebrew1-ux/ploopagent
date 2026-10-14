@@ -197,7 +197,7 @@ export const browseTool = tool({
     const vm = await getVm();
     if (vm.kind !== 'vercel') {
       throw new Error(
-        'The browser needs ploop’s Vercel VM, which isn’t set up here. Use readPage instead.',
+        'The browser is only set up on ploop’s Vercel VM, not on the linked VM. Use readPage instead.',
       );
     }
 

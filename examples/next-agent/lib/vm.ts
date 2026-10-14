@@ -1,16 +1,20 @@
 import type { Experimental_SandboxSession as SandboxSession } from '@ai-sdk/provider-utils';
 import { createJustBashNetworkSandboxSession } from '@ai-sdk/sandbox-just-bash';
+import { createSshSession, sshTargetFromEnv } from '@/lib/ssh-vm';
 import {
   createVercelNetworkSandboxSession,
   resumeVercelNetworkSandboxSession,
 } from '@ai-sdk/sandbox-vercel';
 
-// Ploop's own computer. With Vercel credentials it is a persistent Vercel
-// Sandbox microVM (one per deployment, named by PLOOP_VM_NAME) whose disk is
-// restored between sessions. Without them it is an in-memory just-bash
-// sandbox for local development, which forgets everything on restart.
+// Ploop's own computer. In order of preference:
+// - a Linux machine the user links over SSH (Settings > Computer), which can be
+//   any free one, such as an always-free cloud VM or a spare computer;
+// - a persistent Vercel Sandbox microVM (one per deployment, named by
+//   PLOOP_VM_NAME) whose disk is restored between sessions;
+// - an in-memory just-bash sandbox, which is free but forgets everything on
+//   restart.
 export type PloopVm = {
-  kind: 'vercel' | 'local';
+  kind: 'ssh' | 'vercel' | 'local';
   session: SandboxSession;
   workspace: string;
 };
@@ -36,7 +40,26 @@ export function hasVercelVm() {
   return process.env.VERCEL_OIDC_TOKEN != null || process.env.VERCEL === '1';
 }
 
+export function hasSshVm() {
+  return Boolean(process.env.PLOOP_SSH_HOST?.trim());
+}
+
 async function startVm(): Promise<PloopVm> {
+  const ssh = sshTargetFromEnv();
+  if (ssh) {
+    const session = createSshSession(ssh);
+    // Fail now, with a readable reason, instead of on the first command.
+    const probe = await session.run({
+      command: 'mkdir -p "$HOME/ploop" && echo "$HOME/ploop"',
+    });
+    if (probe.exitCode !== 0) {
+      throw new Error(
+        `The linked VM answered but could not make a workspace: ${probe.stderr.trim()}`,
+      );
+    }
+    return { kind: 'ssh', session, workspace: probe.stdout.trim() };
+  }
+
   if (!hasVercelVm()) {
     const network = await createJustBashNetworkSandboxSession({
       cwd: '/home/ploop',

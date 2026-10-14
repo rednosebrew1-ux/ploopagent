@@ -5,7 +5,7 @@ type ToolPart = Extract<
   { type: `tool-${string}` }
 >;
 
-const LABELS: Record<string, string> = {
+export const LABELS: Record<string, string> = {
   remember: 'Remembering',
   recall: 'Checking memory',
   forget: 'Forgetting',

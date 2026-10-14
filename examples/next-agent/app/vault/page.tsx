@@ -1,6 +1,7 @@
 'use client';
 
 import BrandHeader from '@/component/brand-header';
+import ComputerSection from '@/component/vault/computer-section';
 import KeysSection from '@/component/vault/keys-section';
 import LoginsSection from '@/component/vault/logins-section';
 import { useEffect, useState } from 'react';
@@ -47,6 +48,7 @@ export default function VaultPage() {
         <>
           <LoginsSection api={api} />
           <KeysSection api={api} />
+          <ComputerSection api={api} />
 
           <section aria-labelledby="about-heading" className="text-sm">
             <h2 id="about-heading" className="mb-3 text-lg font-semibold">
