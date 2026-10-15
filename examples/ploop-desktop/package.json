@@ -1,6 +1,6 @@
 {
   "name": "@example/ploop-desktop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "The ploop desktop app for macOS: ploop's chat plus a credential vault it can sign in with.",
   "author": "ploop",
