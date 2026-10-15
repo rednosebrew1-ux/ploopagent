@@ -9,6 +9,12 @@ const settingsSchema = z.object({
   tavilyApiKey: z.string().optional(),
   resendApiKey: z.string().optional(),
   fromEmail: z.string().optional(),
+  // A computer ploop can use over SSH. None of this is secret: the key itself
+  // stays in a file the user already has, and only its path is kept.
+  sshHost: z.string().optional(),
+  sshUser: z.string().optional(),
+  sshPort: z.string().optional(),
+  sshKeyPath: z.string().optional(),
   // Signs approval requests so a web page can't forge a click on "Approve".
   approvalSecret: z.string().optional(),
 });
@@ -20,6 +26,10 @@ export const settingKeys = [
   'tavilyApiKey',
   'resendApiKey',
   'fromEmail',
+  'sshHost',
+  'sshUser',
+  'sshPort',
+  'sshKeyPath',
 ] as const;
 
 export type SettingKey = (typeof settingKeys)[number];
@@ -31,6 +41,10 @@ export type SettingsStatus = {
   tavilyApiKey: boolean;
   resendApiKey: boolean;
   fromEmail: string;
+  sshHost: string;
+  sshUser: string;
+  sshPort: string;
+  sshKeyPath: string;
 };
 
 export class SettingsStore {
@@ -52,6 +66,10 @@ export class SettingsStore {
       tavilyApiKey: Boolean(settings.tavilyApiKey),
       resendApiKey: Boolean(settings.resendApiKey),
       fromEmail: settings.fromEmail ?? '',
+      sshHost: settings.sshHost ?? '',
+      sshUser: settings.sshUser ?? '',
+      sshPort: settings.sshPort ?? '',
+      sshKeyPath: settings.sshKeyPath ?? '',
     };
   }
 
@@ -88,6 +106,12 @@ export class SettingsStore {
     if (settings.tavilyApiKey) env.TAVILY_API_KEY = settings.tavilyApiKey;
     if (settings.resendApiKey) env.RESEND_API_KEY = settings.resendApiKey;
     if (settings.fromEmail) env.PLOOP_FROM_EMAIL = settings.fromEmail;
+    if (settings.sshHost) {
+      env.PLOOP_SSH_HOST = settings.sshHost;
+      if (settings.sshUser) env.PLOOP_SSH_USER = settings.sshUser;
+      if (settings.sshPort) env.PLOOP_SSH_PORT = settings.sshPort;
+      if (settings.sshKeyPath) env.PLOOP_SSH_KEY_PATH = settings.sshKeyPath;
+    }
     return env;
   }
 }

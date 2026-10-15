@@ -23,7 +23,7 @@ export default function ChatInput({
       <input
         className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded-full shadow-xl bg-white focus:outline-none focus:ring-2 focus:ring-ink"
         placeholder="Say something..."
-        disabled={status !== 'ready'}
+        disabled={status !== 'ready' && status !== 'error'}
         value={text}
         onChange={e => setText(e.target.value)}
       />

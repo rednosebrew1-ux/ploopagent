@@ -21,9 +21,16 @@ import { readPageTool, searchWebTool } from '@/tool/web-tools';
 import { createOpenAI } from '@ai-sdk/openai';
 import { ToolLoopAgent, stepCountIs, type InferAgentUIMessage } from 'ai';
 
+// OPENROUTER_BASE_URL and PLOOP_MODEL exist so tests and tinkerers can point
+// ploop at another OpenAI-compatible endpoint or model.
 const openrouter = createOpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
+  baseURL: process.env.OPENROUTER_BASE_URL ?? 'https://openrouter.ai/api/v1',
   apiKey: process.env.OPENROUTER_API_KEY,
+  // Lets OpenRouter show ploop as the app behind the requests.
+  headers: {
+    'HTTP-Referer': 'https://github.com/rednosebrew1-ux/ploopagent',
+    'X-Title': 'ploop',
+  },
 });
 
 const PLOOP_INSTRUCTIONS = `You are ploop, an open-source personal agent. You help one person get things done: you remember what matters to them, research and plan toward their goals, and take actions for them only with their approval.
@@ -41,7 +48,7 @@ How you work:
 Style: be warm, brief and direct. Lead with the answer or the result, then the details. Ask one clear question when you genuinely need input.`;
 
 export const ploopAgent = new ToolLoopAgent({
-  model: openrouter.chat('anthropic/claude-opus-4'),
+  model: openrouter.chat(process.env.PLOOP_MODEL ?? 'anthropic/claude-opus-4'),
   instructions: PLOOP_INSTRUCTIONS,
   prepareCall: options => ({
     ...options,
